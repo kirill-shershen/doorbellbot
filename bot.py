@@ -6,7 +6,7 @@ from pyA20.gpio import port
 from time import sleep
 from pyA20.gpio import connector
 import config
-
+import time
 
 token = config.bot_token
 allow_users = config.allow_users.split(',')
@@ -27,12 +27,24 @@ gpio.pullup(pin_in, gpio.PULLDOWN)
 sleep(0.1)
 
 gpio.output(pin_out, 1)
+n = True
+start = time.clock()
+stop = 0
 try:
     while True:
-        state1 = gpio.input(pin_in)
-        sleep(0.3)
-        state2 = gpio.input(pin_in)
-        if state1 == 1 and state1 == state2:
+        #читаем еденицы
+        if n:
+            state = gpio.input(pin_in)
+            n = state == 1
+        # если проскочил 0 значит шум, сбрасываем время
+        if not n:
+            start = time.clock()
+            n = True
+        stop = time.clock()
+        # если в течение 0.2 секунд были только 1 значит кнопка нажата
+        if stop - start > 0.2:
+            print 'bell'
+            n = False
             for b in allow_users:
                 bot.send_message(b, u'В дверь звонят!')
             sleep(1)
