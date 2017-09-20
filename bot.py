@@ -28,7 +28,7 @@ sleep(0.1)
 
 gpio.output(pin_out, 1)
 n = True
-start = time.clock()
+start = time.time()
 stop = 0
 try:
     while True:
@@ -38,9 +38,9 @@ try:
             n = state == 1
         # если проскочил 0 значит шум, сбрасываем время
         if not n:
-            start = time.clock()
+            start = time.time()
             n = True
-        stop = time.clock()
+        stop = time.time()
         # если в течение 0.2 секунд были только 1 значит кнопка нажата
         if stop - start > 0.2:
             print 'bell'
@@ -48,6 +48,7 @@ try:
             for b in allow_users:
                 bot.send_message(b, u'В дверь звонят!')
             sleep(1)
+        sleep(0.01)
 except KeyboardInterrupt:
     gpio.output(pin_out, gpio.LOW)
     print '\n exit'
