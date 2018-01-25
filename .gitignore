@@ -1,2 +1,6 @@
 config.py
 config.pyc
+test.py
+bot.out
+bot.err
+bot.py.save
